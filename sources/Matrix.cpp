@@ -358,8 +358,6 @@ namespace zich
                 result.push_back(temp);
             }
         }
-
-        // return result;
     }
     /*
      * @brief check valdation of an input
