@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 #include <map>
-using namespace std;
+#include <algorithm>
 using std::vector;
 namespace zich
 {
@@ -41,16 +41,16 @@ namespace zich
     {
 
     private:
-        map<int, map<int, double>> _mat;
+        std::map<int, std::map<int, double>> _mat;
         int _row, _col;
 
     public:
-        Matrix(vector<double> &vec, int row, int col);
+        Matrix(const vector<double> &vec, int row, int col);
         ~Matrix(){};
 
         //--------------overloading input/output operators ---------------//
-        friend ostream &operator<<(ostream &output, const Matrix &matrix);
-        friend istream &operator>>(istream &input, Matrix &mat);
+        friend std::ostream &operator<<(std::ostream &output, const Matrix &matrix);
+        friend std::istream &operator>>(std::istream &input, Matrix &mat);
 
         //--------------overloading operators ---------------//
         Matrix operator+(const Matrix &otherMat);
@@ -62,6 +62,7 @@ namespace zich
         Matrix operator++(int);
         Matrix operator--(int);
         friend Matrix operator*(const double scalar, const Matrix &mat);
+        friend Matrix operator*(const Matrix &mat, const double scalar);
         Matrix &operator*=(const double scalar);
         Matrix &operator+=(Matrix const &otherMat);
         Matrix &operator-=(Matrix const &otherMat);

@@ -9,11 +9,11 @@
 namespace zich
 {
 
-    Matrix::Matrix(vector<double> &vec, int row, int col)
+    Matrix::Matrix(const vector<double> &vec, int row, int col)
     {
         if ((row <= 0 || col <= 0) || vec.size() != row * col)
         {
-            throw invalid_argument("numbers should be postives");
+            throw std::invalid_argument("Wrong cols and rows values");
         }
 
         this->_row = row;
@@ -63,17 +63,17 @@ namespace zich
         return Matrix(new_vec, _row, _col);
     }
 
-    Matrix Matrix::operator++(int) // postfix a--
+    Matrix Matrix::operator++(int) // postfix a++
     {
+
         Matrix temp = *this;
-        ++(temp);
+        ++(*this);
         return temp;
     }
-    Matrix Matrix::operator--(int) // postfix a++
+    Matrix Matrix::operator--(int) // postfix a--
     {
         Matrix temp = *this;
-        --(temp);
-
+        --(*this);
         return temp;
     }
 
@@ -95,10 +95,16 @@ namespace zich
     {
 
         Matrix m = Mat;
-        vector<double> new_vec;
-
+        std::vector<double> new_vec;
         m.operation(Mat, scalar, new_vec, sc_mult);
         return Matrix(new_vec, Mat._row, Mat._col);
+    }
+    Matrix operator*(const Matrix &Mat, const double scalar)
+    {
+
+        Matrix temp = Mat;
+        temp = scalar * Mat;
+        return temp;
     }
 
     Matrix &Matrix::operator*=(const double scalar)
@@ -171,9 +177,9 @@ namespace zich
     /*
      * @brief  overloading input/output
      */
-    ostream &operator<<(ostream &output, const Matrix &matrix)
+    std::ostream &operator<<(std::ostream &output, const Matrix &matrix)
     {
-        string m;
+        std::string m;
         for (int i = 0; i < matrix._row; i++)
         {
 
@@ -181,29 +187,73 @@ namespace zich
             for (int j = 0; j < matrix._col - 1; j++)
             {
                 int a = matrix._mat.at(i).at(j);
-                m += to_string(a);
+                m += std::to_string(a);
                 m += " ";
             }
             int a = matrix._mat.at(i).at(matrix._col - 1);
-            m += to_string(a);
-            m += "]\n";
+            m += std::to_string(a);
+
+            m += "]";
+            if (i != matrix._row - 1)
+            {
+                m += "\n";
+            }
         }
         output << m;
 
         return output;
     }
 
-    istream &operator>>(istream &input, Matrix &matrix)
+    std::istream &operator>>(std::istream &input, Matrix &matrix)
     {
 
-        for (int i = 0; i < matrix._row; i++)
+        std::string buff;
+        int rows_counter = 0;
+        int cols_counter = 0;
+        int count = 0;
+        vector<double> tempVec;
+        getline(input, buff);
+        if (!input)
         {
-            for (int j = 0; j < matrix._col; j++)
-            {
+            std::cout << "failure\n";
+        }
+        unsigned endOfString = buff.size() - 1;
+        for (unsigned i = 0; i < buff.size(); i++)
+        {
 
-                input >> matrix._mat[i][j];
+            if (buff[i] == '[')
+            {
+                count++;
+            }
+            if (((i == 0) && (buff[i] != '[')) || ((i == endOfString) && buff[i + 1] != '\0'))
+            {
+                throw std::invalid_argument("invalid operation on the matrix");
+            }
+
+            if (buff[i] == ']')
+            {
+                rows_counter++;
+                if ((i < buff.size() - 1) && !(buff[i + 1] == ',' && buff[i + 2] == ' '))
+                {
+                    throw std::invalid_argument("invalid operation on the matrix");
+                }
+            }
+            if (isdigit(buff[i]) != 0)
+            {
+                int a = buff[i] - '0';
+                tempVec.push_back(a);
+                if (count == 1)
+                {
+                    cols_counter++;
+                }
             }
         }
+
+        Matrix tempMat = {tempVec,
+                          rows_counter,
+                          cols_counter};
+
+        matrix = tempMat;
 
         return input;
     }
@@ -215,7 +265,7 @@ namespace zich
     {
         if (!checkValidation(*this, otherMat, opr))
         {
-            throw invalid_argument("invalid operation on the matrix");
+            throw std::invalid_argument("invalid operation on the matrix");
         }
 
         unsigned int index = 0;
@@ -273,7 +323,7 @@ namespace zich
     {
         if (!checkValidation(mat1, mat2, chComp))
         {
-            throw invalid_argument("invalid operation on the matrix");
+            throw std::invalid_argument("invalid operation on the matrix");
         }
 
         double m1 = 0;
@@ -340,7 +390,7 @@ namespace zich
         // n*m m*k => n*k
         if (mat2._row != mat1._col)
         {
-            throw invalid_argument("invalid operation on the matrix");
+            throw std::invalid_argument("invalid operation on the matrix");
         }
 
         for (int i = 0; i < mat1._row; i++)
@@ -376,5 +426,4 @@ namespace zich
 
         return true;
     }
-
 }

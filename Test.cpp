@@ -127,6 +127,7 @@ TEST_CASE("not valid  input test case")
         for (int j = i + 1; j < 100; j++)
         {
             bool res;
+            // always gonna throw i!=j
             m1.setRowCol(i, i);
             m2.setRowCol(j, j);
             CHECK_THROWS(m1 * m2);
@@ -229,4 +230,42 @@ TEST_CASE("Test operators")
 
     bool b7 = checkOper(mu, mu, mres, 3, 3, OPERATOR::mult_mat);
     CHECK(b7 == true);
+}
+TEST_CASE("Test output/input operator")
+{
+
+    vector<double> arr1 = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    vector<double> arr2 = {3, -2, 0, 0, 3, 0, -1, 0, 3};
+    vector<double> arr3 = {5, 0, 0, 0, 5, 0, 0, 0, 5};
+    vector<double> arr4 = {5, 0, 0, 6, 7,
+                           7, 0, 5, 0, 0,
+                           0, 5, 0, 0, 0};
+    Matrix mat1{arr1, 3, 3};
+    Matrix mat2{arr2, 3, 3};
+    Matrix mat3{arr3, 3, 3};
+    Matrix mat4{arr4, 3, 5};
+
+    // output
+    ostringstream ostream1;
+    ostream1 << mat1;
+    CHECK(ostream1.str() == "[1 0 0]\n[0 1 0]\n[0 0 1]");
+    ostringstream ostream2;
+    ostream2 << mat2;
+    CHECK(ostream2.str() == "[3 -2 0]\n[0 3 0]\n[-1 0 3]");
+    ostringstream ostream3;
+    ostream3 << mat3;
+    CHECK(ostream3.str() == "[5 0 0]\n[0 5 0]\n[0 0 5]");
+
+    // input
+    ostringstream ostream4;
+    ostream4 << mat4;
+    CHECK(ostream4.str() == "[5 0 0 6 7]\n[7 0 5 0 0]\n[0 5 0 0 0]");
+    istringstream st1{"[1 1 1 1]$[1 1 1 1], [1 1 1 1]\n"};
+    CHECK_THROWS(st1 >> mat1);
+    istringstream st2{"[1 1 1 1]+, [1 1 1 1] [1 1 1 1],\n"};
+    CHECK_THROWS(st2 >> mat1);
+    istringstream st3{"[1 11 1]    [1 1 1 1], [1 1 1 1]\n"};
+    CHECK_THROWS(st3 >> mat1);
+    istringstream st4{"[1 4 1 1], [1 2 1 1], [1 1 1 1]\n"};
+    CHECK_NOTHROW(st4 >> mat1);
 }
