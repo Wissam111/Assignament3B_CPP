@@ -266,6 +266,6 @@ TEST_CASE("Test output/input operator")
     CHECK_THROWS(st2 >> mat1);
     istringstream st3{"[1 11 1]    [1 1 1 1], [1 1 1 1]\n"};
     CHECK_THROWS(st3 >> mat1);
-    istringstream st4{"[1 4 1 1], [1 2 1 1], [1 1 1 1]\n"};
+    istringstream st4{"[1 42 12 1], [1 2 1 1], [1 1 1 12]\n"};
     CHECK_NOTHROW(st4 >> mat1);
 }

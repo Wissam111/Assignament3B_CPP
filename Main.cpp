@@ -4,18 +4,29 @@
 #include <stdexcept>
 using namespace std;
 
-#include "../sources/Matrix.cpp"
-using namespace zich;
+#include "sources/Matrix.cpp"
 
+zich::Matrix generateRandomMatrix(int row, int col, int max, int min)
+{
+    vector<double> vec;
+    int randNum;
+    for (int i = 0; i < row * col; i++)
+    {
+        randNum = rand() % (max - min + 1) + min;
+        vec.push_back(randNum);
+    }
+
+    return zich::Matrix(vec, row, col);
+}
 int main()
 {
 
-    std::vector<double> identity = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-    std::vector<double> arr = {2, 0, 0, 0, 2, 0, 0, 0, 2};
+    // std::vector<double> identity = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    // std::vector<double> arr = {2, 0, 0, 0, 2, 0, 0, 0, 2};
 
     int scalar = 2;
-    Matrix a{identity, 3, 3};
-    Matrix b{identity, 3, 3};
+    // zich::Matrix a{identity, 3, 3};
+    // zich::Matrix b{arr, 3, 3};
     int command = 0;
     cout << "Commands: " << endl;
     cout << "Choose 1 for a+b" << endl;
@@ -29,14 +40,26 @@ int main()
     cout << "Choose 9 for a==b" << endl;
     cout << "Choose 10 for a!=b" << endl;
 
+    zich::Matrix a = generateRandomMatrix(5, 5, 20, 50);
+    //[150,200]
+    zich::Matrix b = generateRandomMatrix(5, 5, 50, 70);
+
+    cout << "First Mat: " << endl;
+    cout << a << endl;
+
+    cout << "Second Mat: " << endl;
+    cout << b << endl;
+
     while (true)
     {
+
         cout << "Enter Command: " << endl;
         cin >> command;
 
         switch (command)
         {
         case 1:
+
             cout << a + b << endl;
             break;
 
@@ -70,3 +93,4 @@ int main()
             break;
         }
     }
+}

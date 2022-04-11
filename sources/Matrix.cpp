@@ -211,6 +211,7 @@ namespace zich
         int rows_counter = 0;
         int cols_counter = 0;
         int count = 0;
+        std::string tempStr;
         vector<double> tempVec;
         getline(input, buff);
         if (!input)
@@ -238,13 +239,21 @@ namespace zich
                     throw std::invalid_argument("invalid operation on the matrix");
                 }
             }
+            // adding a number to the vector
             if (isdigit(buff[i]) != 0)
             {
-                int a = buff[i] - '0';
-                tempVec.push_back(a);
-                if (count == 1)
+                // every times sees a digit add it to a string
+                tempStr += buff[i];
+                // when done seeing digits
+                if ((i < buff.size() - 1) && (isdigit(buff[i + 1]) == 0))
                 {
-                    cols_counter++;
+                    int a = stoi(tempStr);
+                    tempVec.push_back(a);
+                    tempStr = "";
+                    if (count == 1)
+                    {
+                        cols_counter++;
+                    }
                 }
             }
         }
